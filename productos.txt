@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Test 1 sks",
+    "price": "1000",
+    "thumbnail": "https://cdn4.iconfinder.com/data/icons/fat-face/100/Teeth-256.png",
+    "id": 1
+  },
+  {
+    "title": "test 2 sks ",
+    "price": "800",
+    "thumbnail": "https://cdn4.iconfinder.com/data/icons/fat-face/100/Faint-256.png",
+    "id": 2
+  },
+  {
+    "title": "test 3 sks",
+    "price": "800",
+    "thumbnail": "https://cdn4.iconfinder.com/data/icons/fat-face/100/Frightened-256.png",
+    "id": 3
+  },
+  {
+    "title": "test 4 sks",
+    "price": "500",
+    "thumbnail": "https://cdn4.iconfinder.com/data/icons/fat-face/100/Blank-256.png",
+    "id": 4
+  },
+  {
+    "title": "test 5 sks",
+    "price": "15",
+    "thumbnail": "https://cdn4.iconfinder.com/data/icons/fat-face/100/Unsure-256.png",
+    "id": 5
+  }
+]

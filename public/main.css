@@ -1,0 +1,56 @@
+h1, h2{
+    color:#31802a;
+    padding: 1rem;
+}
+.form-top-container{
+    max-width: 50%;
+    text-align: center;
+}
+.product-container{
+    width: 50%;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin-top: 0.75rem;
+}
+.products-h2{
+    text-align: center;
+    color:#31802a;
+    padding: 1rem;
+}
+.products-li{
+    margin: 0.5rem;
+    text-align: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.products-li h6{
+    line-height: 80px;
+}
+.container-chat{
+    width: 70%;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+.container-chat form{
+    width: 60%;
+    margin-left: 20%;
+}
+.message-container{
+    margin: 1.5rem 0;
+    text-align: start;
+}
+.chat-container{
+    margin: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.author{
+    color: rgb(22, 22, 230);
+    padding-left: 1rem;
+}
+.time{
+    color: rgb(88, 75, 75);
+}
+.message{
+    color:#31802a;
+}

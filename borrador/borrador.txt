@@ -1,0 +1,211 @@
+Test from docum...
+(index.js)
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server:OIserver } = require("socket.io"); // Metodo del profe en la clase
+const io = new OIserver(server);
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+  });
+
+io.on('connection', (socket) => {
+  console.log('a user connected ======>');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+  });
+});
+io.emit('some event', { someProperty: 'some value', otherProperty: 'other value' }); // This will emit the event to all connected sockets
+
+server.listen(3000, () => {
+  console.log('listening on *:3000');
+});
+
+//(index.html) same root
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #form {
+            width: 500px;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 0.25rem;
+            position: fixed;
+            top: 200px;
+            left: 200px;
+            display: flex;
+            height: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        #input {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 1;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #form>button {
+            background: #333;
+            border: none;
+            padding: 0 1rem;
+            margin: 0.25rem;
+            border-radius: 3px;
+            outline: none;
+            color: #fff;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages>li {
+            padding: 0.5rem 1rem;
+        }
+
+        #messages>li:nth-child(odd) {
+            background: #efefef;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script>
+        var socket = io();
+
+        var messages = document.getElementById('messages');
+        var form = document.getElementById('form');
+        var input = document.getElementById('input');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('chat message', function (msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    </script>
+</body>
+
+</html>
+
+// rutas borrador por ahora (routes/index.js)
+const { Router } = require("express");
+const contenedor = require("../contenedor");
+const router = Router();
+
+const ddbb = new contenedor("productos.txt");
+const objErr = { error: "Producto no encontrado" };
+
+function serverRoutes(app) {
+    app.use("/api/productos", router);
+
+    //* devuelve todos los productos
+    router.get("/", (req, res) => {
+        const allProducts = ddbb.getAll();
+        allProducts
+            .then((response) => {
+
+                res.render("index", {
+                    products: response
+                });
+            })
+            .catch((err) => console.log("Error router.get('/')", err));
+    });
+
+    //* devuelve un producto según su ID
+    router.get("/:id", (req, res) => {
+        console.log(req.params)
+        const { id } = req.params;
+        const object = ddbb.getById(id);
+        object
+            .then((response) => {
+                if (response) {
+
+                    res.render("index", { products: [response] });
+                } else {
+                    res.json(objErr);
+                }
+            })
+            .catch((err) => console.log("Error router.get('/:id')", err));
+    });
+
+    //* recibe y agrega un producto, lo devuelve con su id
+    router.post("/", (req, res) => {
+        console.log(req.body)
+        const object = req.body;
+        const savedObject = ddbb.save(object);
+        savedObject
+            .then((response) => {
+                res.render("index", null);
+            })
+            .catch((err) => console.log("Error router.post('/')", err));
+    });
+
+    // //* recibe y actualiza un producto según su id
+    // router.put('/:id', (req, res) => {
+    //     const {id} = req.params;
+    //     const obj = req.body;
+    //     const updatedObj = ddbb.updateById(id, obj);
+    //     updatedObj.then(response => {
+    //         if (response) {
+    //             res.json(response);
+    //             console.log("Productos Actualizado",response);
+    //         } else {
+    //             res.json(objErr);
+    //         }
+    //     }).catch(err => console.log("Error router.put('/:id')", err));
+    // })
+
+    // //* Elimina el producto según su id
+    // router.delete('/:id', (req, res) => {
+    //     const {id} = req.params;
+    //     const productDeleted = ddbb.deleteById(id);
+    //     productDeleted.then(response => {
+    //         if (response) {
+    //             res.json(response);
+    //         } else {
+    //             res.json(objErr);
+    //         }
+    //     }).catch(err => console.log("Error router.delete('/:id')", err));
+
+    // })
+}
+
+module.exports = serverRoutes;
